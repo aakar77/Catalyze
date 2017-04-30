@@ -143,6 +143,10 @@ $default_image_path = $file_dir . $default_image;
     }
 
 
+
+
+
+
             echo "<div class='col-md-4'>";
                 echo "<div class='panel panel-default'>";
                    echo "<div class='panel-heading'>";
@@ -155,7 +159,7 @@ $default_image_path = $file_dir . $default_image;
                         <!-- Showing Image of the project --> 
                             <div class='row' style='margin-top:-15px; margin-right:-15px; margin-left:-15px;'>
                                  <img src=".$r_image." class='center-block img-rectangle img-responsive' style=' position: relative;
-    float: left;height:200px; width:300px; background-position: 50% 50%' />
+                                   height:200px;  width:100%; background-position: 50% 50%'  />
 
                             </div>";
 
@@ -177,22 +181,35 @@ $default_image_path = $file_dir . $default_image;
                                     <span class='sr-only'></span>".$row['projstatus']."
                                 </div>
                         </div>
-                        <div><a href='likes.php' class='btn btn-default'>
-                                <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
-                                <span class='sr-only'></span>Like</a>
+                        ";
+?>
+        <div>
 
+            <div class="row">
+                <div class="col-md-3 col-lg-3 ">
+                    <form action='../phplikes.php' method='POST'>
+                        <input type='hidden' name='projid' id='projid' value=<?php echo $row['projid']; ?> />
+                            <button  name='setlikes' id='setlikes' value='submit' class='btn btn-default'>Like It? </button>
+                    </form>
 
-<!-- This is the form which sends a request to for loading a particular project page -->
+                </div>
 
                                 
-                                <form action='./projsearch/proj.php' method='POST'>
-                                    <input type='hidden' name='projectid' id = 'projectid' value=".$row['projid']." />
-                                    <button  name='getproject' id='getproject' value='submit' class='btn btn-default'>Learn More</button>
-                                </form>";
-                   echo "</div>
-                   </div>
+                <!-- Request going to the Project page -->
+                <div class="col-md-3 col-lg-3"> 
+                    <form action='./projsearch/proj.php' method='POST'>
+                            <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row['projid']; ?> />
+                                <button  name='getproject' id='getproject' value='submit' class='btn btn-default'>Learn More</button>
+                    </form>
                 </div>
-            </div>";
+            </div>
+        </div>
+     </div>
+    </div>
+    </div>
+
+<?php
+
 }
 
 ?>

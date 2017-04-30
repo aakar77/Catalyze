@@ -1,16 +1,9 @@
 
 <?php
 //Connect to Server and DB
-$host='localhost';
-$user='root';
-$pass='tiger';
-$db='fundraise';
 
-$con=mysqli_connect($host,$user,$pass,$db);
-if(!$con)
-{
-    echo 'Not Connected to Server!!';
-}
+require './connectdb.php';
+
 $response_array = array();
 $projid=$_POST['projid'];
 //change uid from the session value in the below query

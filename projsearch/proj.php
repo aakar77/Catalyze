@@ -1,3 +1,12 @@
+<?phplikes
+
+    $file_dir = "../uploads/projectcover/";
+    $default_image = "projectdefault.png";
+    $default_image_path = $file_dir . $default_image;
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -149,12 +158,29 @@ $interval = $deadline->diff($now); ?>
         <div class='row'>
 
             <div class='col-md-8'>
-                <img class='img-responsive' src='http://placehold.it/750x500' alt=''>
+<?php
+
+        $r_image = $result['projcoverimage'];
+
+        if ($r_image == null or $r_image == '') {
+            // Show default image if no image specified
+            $r_image =  $default_image_path; 
+        }
+        else{
+            $r_image = ".".$r_image;   
+        }
+
+?>
+
+
+                <img class='img-responsive' src=<?php echo $r_image; ?> class='center-block img-rectangle img-responsive' style=' position: relative; height:100%;  width:100%; background-position: 50% 50%' alt=''>
             </div>
+
+
 
             <div class='col-md-4'>
                 <h3>Project Description</h3>
-                <p>$result[projdescription]</p>
+                <p><?php echo $result['projdescription']; ?></p>
                 <h3>Project Details</h3>
                     <br><span class='glyphicon glyphicon-bullhorn' aria-hidden='true'></span>
                     <span class='sr-only'></span>Funding Status: <?php echo $result['projstatus']; ?></br>
@@ -191,7 +217,7 @@ $interval = $deadline->diff($now); ?>
                         } 
 
                     ?>
-                </br>
+                
         </div>
     </div>
 </div>
@@ -237,9 +263,27 @@ while($myarray)
 
     while($row4=mysqli_fetch_array($fetch4))
     {
-        $sql5="Select uname from user u, project p where u.uid=".$row4['projcreatorid'];
+        $sql5="Select u.uname, p.projcoverimage from user u, project p where u.uid=".$row4['projcreatorid'];
         $fetch5=mysqli_query($con,$sql5);
         $row5=mysqli_fetch_array($fetch5);
+
+        $r_image = $row4['projcoverimage'];
+
+        $file_dir = "../uploads/projectcover/";
+        $default_image = "projectdefault.png";
+        $default_image_path = $file_dir . $default_image;
+
+        if ($r_image == null or $r_image == '') {
+            // Show default image if no image specified
+            $r_image =  $default_image_path; 
+        }
+        else{
+            $r_image = ".".$r_image;   
+        }
+
+
+
+
 
     ?>
 
@@ -253,9 +297,16 @@ while($myarray)
                         
                         <div class='panel-body'>
 
+                        <!-- Showing Image of the project --> 
+                            <div class='row' style='margin-top:-15px; margin-right:-15px; margin-left:-15px;'>
+                                 <img src=<?php echo $r_image; ?> class='center-block img-rectangle img-responsive' style=' position: relative;
+                                   height:200px;  width:100%; background-position: 50% 50%' />
+                            </div>
+
                         <?php
 
-                            $desc=str_pad($row4['projdescription'],50,' ');
+                             $desc=str_pad($row4['projdescription'],50,' ');
+    
                         ?>
                             
                         </div>
@@ -276,23 +327,31 @@ while($myarray)
 
                             <br><h8>Funding Progress</h8></br>
 
-                        <div class='progress'>
-                                    <div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='40' aria-valuemin='0' aria-valuemax='100' style="width: <?php echo $fundstatus1."%"; ?> ">
-                                        <span class='sr-only'></span><?php echo $row4['projstatus']; ?>
-                                    </div>
+                            <div class='progress'>
+                                        <div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='40' aria-valuemin='0' aria-valuemax='100' style="width: <?php echo $fundstatus1."%"; ?> ">
+                                            <span class='sr-only'></span><?php echo $row4['projstatus']; ?>
+                                        </div>
                             </div>
 
 
-                            <div><a href='likes.php' class='btn btn-default'>
-                                    <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
-                                    <span class='sr-only'></span>Like
-                                </a>
-                                
-                                <form action='http://localhost/project/projsearch/proj.php' method='POST'>
-                                    <button id=<?php echo $row4['projid']; ?> name='pname' value=<?php echo $row4['projid']; ?> class='btn btn-default'>Learn More</button>
-                                </form>
+                            <div class="row">
+                                <div class="col-md-3 col-lg-3 ">
+                                    <form action='../phplikes.php' method='POST'>
+                                        <input type='hidden' name='projid' id='projid' value=<?php echo $row4['projid']; ?> />
+                                        <button  name='setlikes' id='setlikes' value='submit' class='btn btn-default'>Like It? </button>
+                                    </form>
 
-                       </div>
+                                </div>
+
+                                
+                                <!-- Request going to the Project page -->
+                                <div class="col-md-3 col-lg-3"> 
+                                    <form action='./proj.php' method='POST'>
+                                        <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row4['projid']; ?> />
+                                        <button  name='getproject' id='getproject' value='submit' class='btn btn-default'>Learn More</button>
+                                    </form>
+                                </div>
+                            </div>
                        </div>
                     </div>
                 </div>
