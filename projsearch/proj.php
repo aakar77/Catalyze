@@ -1,8 +1,6 @@
 <?phplikes
 
-    $file_dir = "../uploads/projectcover/";
-    $default_image = "projectdefault.png";
-    $default_image_path = $file_dir . $default_image;
+    
 
 ?>
 
@@ -135,7 +133,7 @@ $interval = $deadline->diff($now); ?>
 
                 <form action='../php/userprofile1.php' method='POST'>
                     
-                      <input type='hidden' name='userid' value=".$row1['uid']." />
+                      <input type='hidden' name='userid' value=<?php echo $row1['uid']; ?> />
                       <button id='User' name='User' class='btn btn-default btn-primary'>By <?php echo $row1['uname'] ?></button>
                 </form>
 
@@ -159,6 +157,10 @@ $interval = $deadline->diff($now); ?>
 
             <div class='col-md-8'>
 <?php
+
+        $file_dir = "../uploads/projectcover/";
+        $default_image = "projectdefault.png";
+        $default_image_path = $file_dir . $default_image;
 
         $r_image = $result['projcoverimage'];
 
@@ -672,7 +674,7 @@ function liked()
     var id = <?php echo $result['projid']; ?>;
     
     $.ajax({
-                url: 'http://localhost/project/likes.php',
+                url: '../php/likes.php',
                 type: 'POST',
                 data: {'projid': id},
                 success: function(h)
@@ -694,7 +696,7 @@ function insertcomment()
     var id = <?php echo $result['projid']; ?>;
    // var res= null;
     $.ajax({
-                url: 'http://localhost/project/comment.php',
+                url: '../php/comment.php',
                 type: 'POST',
                 data: {'projid': id, 'comment': comment},
                 success: function(data)

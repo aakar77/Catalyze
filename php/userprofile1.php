@@ -16,17 +16,16 @@
     <title>CATALYZE-Project</title>
 
     <!-- Bootstrap Core CSS -->
-    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom Fonts -->
-    <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
 
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <!-- Custom CSS -->
+   <!--
     <link href="../css/user_profile.css" rel="stylesheet">
 
     <!-- Theme CSS -->
@@ -40,17 +39,17 @@
  <!-- Page Content -->
 <div class="container">
 
-<!--
+
     <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
         <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display
+            <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span>
                 </button>
                 <a class="navbar-brand" href="index.html">Catalize</a>
             </div>
-            <!-- Collect the nav links, forms, and other content for toggling
+            <!-- Collect the nav links, forms, and other content for toggling --> 
              <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="hidden">
@@ -66,7 +65,7 @@
                         <a class="page-scroll" href="#SponsoredProjects">Projects Supported</a>
                     </li>
                 </ul>
-            </div> -->
+            </div> 
 
             <!-- /.navbar-collapse -->
         </div>
@@ -81,13 +80,14 @@
 
 
 
+//Will be replaced by user session
 
 if(isset($_POST['userid'])){
 
-
+    $user_session = 8;
     $c_uid = $_POST['userid'];
-    require '../php/connectdb.php';
-    require '../php/sanitize.php';
+    require './connectdb.php';
+    require './sanitize.php';
 
     // Sanitize custom function present in the file which contains necessary functions
     $c_uid = sanitize_input($c_uid, $con);
@@ -96,13 +96,12 @@ if(isset($_POST['userid'])){
     //Query for getting User Profilee page information
 
     //Selecting a single row!
-    $sql = "SELECT u.uname, u.uemail, u.uhometown, u.image FROM USER u WHERE u.uid = ?";
+    $sql = "SELECT u.uid, u.uname, u.uemail, u.uhometown, u.image FROM USER u WHERE u.uid = ?";
     
     // Default User file if not provided
     $file_dir = "../uploads/user/";
     $default_image = "userdefault.jpg";
     $default_image_path = $file_dir . $default_image;
-
 
     if($stmt = $con->prepare($sql)){
 
@@ -116,14 +115,13 @@ if(isset($_POST['userid'])){
 
                   //echo "Success";
 
+                $r_uid = "";
                 $r_uname = "";
                 $r_uemail = "";
                 $r_uhometown = "";
                 $r_image = "";
 
-
-
-                $stmt->bind_result($r_uname, $r_uemail,$r_uhometown,$r_image);
+                $stmt->bind_result($r_uid, $r_uname, $r_uemail,$r_uhometown,$r_image);
 
                 while ($stmt->fetch())
                 {
@@ -132,10 +130,11 @@ if(isset($_POST['userid'])){
                     if ($r_image == null or $r_image == '') {
                         // Show default image if no image specified
                         $r_image =  $default_image_path; 
-                     
-                    }
+                     }
+
+
                         // For calculating no of followers
-                        $sql2 = "SELECT COUNT(*) AS noOfFollowers FROM follows f WHERE f.uid = ?";
+                        $sql2 = "SELECT COUNT(*) AS noOfFollowers FROM follows f WHERE f.followsid = ?";
                         $stmt2 = $con->prepare($sql2);
                         $stmt2->bind_param('i',$c_uid);
                         $stmt2->execute();
@@ -145,7 +144,6 @@ if(isset($_POST['userid'])){
                         $stmt2->fetch();
 
                         // For calculating no of Projects Created
-                        $c_uid = 2;
                         $sql3 = "SELECT COUNT(*) AS noCProjects FROM project p WHERE p.projcreatorid = ?";
                         $stmt3 = $con->prepare($sql3);
                         $stmt3->bind_param('i',$c_uid);
@@ -189,24 +187,31 @@ if(isset($_POST['userid'])){
                                     </div><!--/col-->
 
                                     <div class="col-xs-12 col-sm-4 text-center">
-                                    <br />
+                                        <br />
                                              <img src=<?php echo $r_image; ?> class='center-block img-circle img-responsive' style=" height: 150px;border-radius: 47%;" />
 
-                                     </div><!--/col-->
+                                    </div><!--/col-->
                                 </div>
                                 <br />
                                 <br />
                                 <br />
                                 <div class="row">
 
-                                    <div class="col-xs-12 col-sm-4">
-                                        <h2 style="color:#b92b27;"><strong><?php echo $noOfFollowers; $stmt2->free_result(); $stmt2->close(); ?></strong></h2>
+                                    <div class="col-xs-12 col-sm-3">
+                                        <h2 id="nofcount" style="color:#b92b27;"><strong><?php echo $noOfFollowers; ?>
+                                        </strong></h2>
                                         <p>Followers</p>
-                                        <button class="btn btn-danger btn-block" id="follow" name="follow"><span class="fa fa-plus-circle"></span> Follow </button>
+                                        
+                                            <button  name='follow' id='follow' class='btn btn-danger btn-block'>Follow? 
+                                            </button>
+                                        </form>
                                     </div><!--/col-->
 
-
-                                    <div class="col-xs-12 col-sm-4">
+            <?php 
+                $stmt2->free_result(); 
+                $stmt2->close(); 
+            ?>
+                            <div class="col-xs-12 col-sm-3">
                                         <h2 style="color:#286090;"><strong><?php echo $noOfCProjects; $stmt3->free_result(); $stmt3->close(); ?></strong></h2>
                                         <p>No of Projects Created</p>
                                         <a href="#CreatedProjects"  style="a:link, a:visited {
@@ -225,7 +230,7 @@ a:hover, a:active {
                                     </div><!--/col-->
 
 
-                                    <div class="col-xs-12 col-sm-4">
+                                    <div class="col-xs-12 col-sm-3">
                                         <h2 style="color:#007e33"><strong><?php echo $noSProjects; $stmt4->free_result(); $stmt4->close(); ?></strong></h2>
                                         <p>No of Projects Backed</p>
                                         <button class="btn btn-success btn-block" action="#SponsoredProjects"><span class="fa fa-user"></span>Hello</button>
@@ -237,7 +242,32 @@ a:hover, a:active {
                     </div>
                 </div>
             </div>
+        
+
+
+            <!-- Modal -->
+          <div class="modal fade" id="myModal" role="dialog">
+            <div class="modal-dialog">
+            
+              <!-- Modal content-->
+              <div class="modal-content">
+                <div class="modal-header" style = "background-color: #2a4d6b;">
+                  <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                  <p id="modal-message">Some text in the modal.</p>
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+
+
+
         </section>
+
+
 
         <section id='CreatedProjects' class='bg-light-gray'>
 
@@ -252,44 +282,61 @@ a:hover, a:active {
 
 
         <!-- jQuery -->
-        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="../js/jquery.js"></script>
 
         <!-- Bootstrap Core JavaScript -->
-        <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+        <script src="../js/bootstrap.min.js"></script>
 
         <!-- Plugin JavaScript -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js" integrity="sha384-mE6eXfrb8jxl0rzJDBRanYqgBxtJ6Unn4/1F7q4xRRyIw7Vdg9jP4ycT7x1iVsgb" crossorigin="anonymous"></script>
 
         <!-- Contact Form JavaScript -->
         <script src="../js/jqBootstrapValidation.js"></script>
-        <script src="../js/contact_me.js"></script>
-
-        <!-- Theme JavaScript -->
-        <script src="../js/agency.min.js"></script>
 
         <script type="text/javascript">
             // This script is for follow function
 
-            $(".follow").click(function() {
+
+            $('#follow').click(function() {
+            
+                var userid = <?php echo $r_uid; ?>;   
+                var followsid = <?php echo $user_session; ?>;
+                            
+              
+               // var followerid = $('#followerid').val();
+               // var userid = $('#userid').val();
 
                 $.ajax({
-                    url: './php/followuser.php',
+                    url: './followuser.php',
                     type: 'POST',
-                    data: {'pname': },
-                    dataType: "json",
+                    data: {'userid': userid, 'followsid':followsid },
+                    dataType: 'json',
                     success: function(data){
                     //alert("yes");
-
                         if(data.status == "success"){
-                           
 
+                            var nof = $( "#nofcount" ).text()
+                            nof = parseInt(nof) + 1;
+
+                            $("#follow").prop("disabled",true);
+                            $("#nofcount" ).text(nof);
+
+
+                           $('#modal-message').html("Successfully Followed");
+                           $('#myModal').modal({
+                                show: 'true'
+                            });
 
                         }
                         else if (data.status == "error"){
 
-                         
-                        }
 
+                           $('#modal-message').html("Sorry! You have already followed");
+                           $('#myModal').modal({
+                                show: 'true'
+                            });
+                            
+                        }
                     },
                     error: function(xhr, desc, err){
                         console.log(xhr);
@@ -298,8 +345,7 @@ a:hover, a:active {
                 }); // ending ajax call
             });
 
-        </script>
-
+            </script>
 
     </body>
 
