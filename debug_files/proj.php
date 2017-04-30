@@ -79,16 +79,16 @@
     <!-- Custom CSS -->
     <link href="css/portfolio-item.css" rel="stylesheet">
 </head>
-
 <body>
+
     <!-- Page Content -->
     <div class="container">
         <!-- Portfolio Item Heading -->
         <div class="row">
             <div class="col-lg-12">
-
 <?php
 //Connect to Server and DB
+
 require '../php/connectdb.php';
 
 $id=$_POST['projectid'];
@@ -112,12 +112,14 @@ $row2=mysqli_fetch_array($fetch2);
 $sql3="Select tag from projtags t where t.projid=$result[projid]";
 $fetch3=mysqli_query($con,$sql3);
 
+
 $deadline=date_create($result['projfunddeadlinedatetime']);
 $now = new DateTime();
-$interval = $deadline->diff($now); ?>
+$interval = $deadline->diff($now);
 
-                <h1 class='page-header'><?php echo $result['projname']; ?>
-                    <br />
+                echo "<h1 class='page-header'> $result[projname]
+                
+                <br />
 
                 <small>
 
@@ -127,19 +129,16 @@ $interval = $deadline->diff($now); ?>
                 <form action='../php/userprofile1.php' method='POST'>
                     
                       <input type='hidden' name='userid' value=".$row1['uid']." />
-                      <button id='User' name='User' class='btn btn-default btn-primary'>By <?php echo $row1['uname'] ?></button>
+                      <button id='User' name='User' class='btn btn-default btn-primary'>By  $row1[uname] </button>
                 </form>
 
                 </small>
                 <br/>
 
-                <p>Posted on <?php echo date_format(date_create($result['projpostingdatetime']),'jS \o\f F,Y'); ?> </p>
-                    
-                <form id='like' action='javascript:liked()'/>
-                    <button type='submit' value='submit' class='btn btn-default'>
-                        <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
-                        <span class='sr-only'></span>Like</a>
-                    </button>
+                    <p>Posted on ".date_format(date_create($result['projpostingdatetime']),'jS \o\f F,Y')." </p>
+                    <a href='likes.php' class='btn btn-default'>
+                                <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
+                                <span class='sr-only'></span>Like</a>
                 </h1>
             </div>
         </div>
@@ -157,41 +156,28 @@ $interval = $deadline->diff($now); ?>
                 <p>$result[projdescription]</p>
                 <h3>Project Details</h3>
                     <br><span class='glyphicon glyphicon-bullhorn' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Funding Status: <?php echo $result['projstatus']; ?></br>
-
+                    <span class='sr-only'></span>Funding Status: $result[projstatus]</br>
                     <br><span class='glyphicon glyphicon-usd' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Minimum Amount Required: <?php echo $result['projminfundreq']; ?></br>
-                    
+                    <span class='sr-only'></span>Minimum Amount Required: $result[projminfundreq]</br>
                     <br><span class='glyphicon glyphicon-usd' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Maximum Amount Required: <?php echo $result['projmaxfundreq']; ?></br>
-                    
+                    <span class='sr-only'></span>Maximum Amount Required: $result[projmaxfundreq]</br>
                     <br><span class='glyphicon glyphicon-usd' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Fund Collected: <?php  echo $result['projfundcollected']; ?></br>
-                    
+                    <span class='sr-only'></span>Fund Collected: $result[projfundcollected]</br>
                     <br><span class='glyphicon glyphicon-time' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Funding Deadline: <?php echo $interval->format('%a days, %h hours'); ?></br>
-                    
+                    <span class='sr-only'></span>Funding Deadline: ".$interval->format('%a days, %h hours')."</br>
                     <br><span class='glyphicon glyphicon-pushpin' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Project Category: <?php echo $row2['categoryname']; ?></br>
-                    
+                    <span class='sr-only'></span>Project Category: $row2[categoryname]</br>
                     <br><span class='glyphicon glyphicon-tags' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Project Tags:  
-                   <?php
+                    <span class='sr-only'></span>Project Tags: ";
 
                     while($row3=mysqli_fetch_array($fetch3))
                         {
-                         ?>
-
-                         <form action='http://localhost/project/likes.php' method='POST'>
-                                <button id='a'"."' name='tagname' value='"'<?php echo $row3['tag']; ?>'"' class='btn btn-default'>
+                            echo "<form action='http://localhost/project/likes.php' method='POST'>
+                                <button id='a'"."' name='tagname' value='".$row3['tag']."' class='btn btn-default'>
                                 <span class='glyphicon glyphicon-tag' aria-hidden='true'></span>
-                                <span class='sr-only'></span><?php echo $row3['tag']; ?></button>
-                        </form>
-                     <?php    
-                        } 
-
-                    ?>
-                </br>
+                                <span class='sr-only'></span>".$row3['tag']."</button></form>";
+                        }
+                    echo "</br>
         </div>
     </div>
 </div>
@@ -202,105 +188,72 @@ $interval = $deadline->diff($now); ?>
             <div class='col-lg-12'>
                 <h3 class='page-header'>Related Projects</h3>
             </div>
-            <!--panels for related projects-->
-
-<?php 
+            <!--panels for related projects-->";
 
 $sql7="Select tag from projtags t where t.projid=$result[projid]";
 $fetch7=mysqli_query($con,$sql7);
-
 $sql9="Select categoryname from category c where c.categoryid=$result[categoryid]";
 $fetch9=mysqli_query($con,$sql9);
-
 $myarray=array();
-while($row7=mysqli_fetch_array($fetch7) || $row9=mysqli_fetch_array($fetch9))
+while($row7=mysqli_fetch_array($fetch7)||$row9=mysqli_fetch_array($fetch9))
 {
-    //echo "heloo ".$row7['tag'];
-    $sql6="Select distinct p.projid from project p, category c, projtags t where (p.categoryid=c.categoryid and c.categoryid=".$result['categoryid'].") or (p.projid=t.projid and t.tag='".$row7['tag']."')";
-    
-    $fetch6=mysqli_query($con,$sql6);
-    $row6=mysqli_fetch_array($fetch6);
-
-    while ($row6=mysqli_fetch_array($fetch6))
-    {
-        if(!in_array($row6['projid'], $myarray))
-        $myarray[]=$row6['projid'];
-        //print_r($myarray);
-    }
+//echo "heloo ".$row7['tag'];
+$sql6="Select distinct p.projid from project p, category c, projtags t where (p.categoryid=c.categoryid and c.categoryid=$result[categoryid]) or (p.projid=t.projid and t.tag='".$row7['tag']."')";
+$fetch6=mysqli_query($con,$sql6);
+$row6=mysqli_fetch_array($fetch6);
+while ($row6=mysqli_fetch_array($fetch6))
+{
+    if(!in_array($row6['projid'], $myarray))
+    $myarray[]=$row6['projid'];
+    //print_r($myarray);
 }
-
+}
 while($myarray)
 {
-    $element=array_pop($myarray);
-    $sql4="Select * from project where projid=$element";
-    $fetch4=mysqli_query($con,$sql4);
-
-    while($row4=mysqli_fetch_array($fetch4))
-    {
-        $sql5="Select uname from user u, project p where u.uid=".$row4['projcreatorid'];
-        $fetch5=mysqli_query($con,$sql5);
-        $row5=mysqli_fetch_array($fetch5);
-
-    ?>
-
-                <div class='col-md-4'>
-                    <div class='panel panel-default'>
-                        
-                        <div class='panel-heading'>
-                            <h4><?php  echo $row4['projname']; ?></h4>
-                            <h8> By <?php echo $row5['uname']; ?></h8>
-                        </div>
-                        
-                        <div class='panel-body'>
-
-                        <?php
-
-                            $desc=str_pad($row4['projdescription'],50,' ');
-                        ?>
-                            
-                        </div>
-                            
-                            <p> <?php echo substr($desc,0,50); ?> ....</p>
-                <?php 
-                    $fundstatus1=($row4['projfundcollected']/$row4['projmaxfundreq'])*100;
-                            
-                    $deadline1=date_create($row4['projfunddeadlinedatetime']);
-                    $now1 = new DateTime();
-                    $interval1 = $deadline1->diff($now1);
-                      
-                            //echo date_format($deadline,'g:ia \o\n jS F Y')
-                              //<a href='project.php' class='btn btn-default'>Learn More</a></div>";
-                ?>            
-                        <div class='panel-footer'>Funding Deadline: <?php echo $interval1->format("%a days, %h hours"); ?>
-                            <br>Funds collected: $<?php echo $row4['projfundcollected']; ?></br>
-
-                            <br><h8>Funding Progress</h8></br>
-
+$element=array_pop($myarray);
+$sql4="Select * from project where projid=$element";
+$fetch4=mysqli_query($con,$sql4);
+while($row4=mysqli_fetch_array($fetch4))
+{
+$sql5="Select uname from user u, project p where u.uid=$row4[projcreatorid]";
+$fetch5=mysqli_query($con,$sql5);
+$row5=mysqli_fetch_array($fetch5);
+            echo "<div class='col-md-4'>";
+                echo "<div class='panel panel-default'>";
+                   echo "<div class='panel-heading'>";
+                        echo "<h4>".$row4['projname']."</h4>";
+                        echo "by <h8>".$row5['uname']."</h8>";
+                    echo "</div>";
+                    echo "<div class='panel-body'>";
+                        $desc=str_pad($row4['projdescription'],50,' ');
+                        echo "</div>";
+                        echo "<p> ".substr($desc,0,50)."...."."</p>";
+                        $fundstatus1=($row4['projfundcollected']/$row4['projmaxfundreq'])*100;
+                        $deadline1=date_create($row4['projfunddeadlinedatetime']);
+                        $now1 = new DateTime();
+                        $interval1 = $deadline1->diff($now1);
+                        //echo date_format($deadline,'g:ia \o\n jS F Y')
+                          //<a href='project.php' class='btn btn-default'>Learn More</a></div>";
+                        echo "<div class='panel-footer'>Funding Deadline: ".$interval1->format("%a days, %h hours");
+                        echo "<br>Funds collected: $".$row4['projfundcollected']."</br>";
+                        echo "<br><h8>Funding Progress</h8></br>
                         <div class='progress'>
-                                    <div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='40' aria-valuemin='0' aria-valuemax='100' style="width: <?php echo $fundstatus1."%"; ?> ">
-                                        <span class='sr-only'></span><?php echo $row4['projstatus']; ?>
-                                    </div>
-                            </div>
-
-
-                            <div><a href='likes.php' class='btn btn-default'>
-                                    <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
-                                    <span class='sr-only'></span>Like
-                                </a>
-                                
-                                <form action='http://localhost/project/projsearch/proj.php' method='POST'>
-                                    <button id=<?php echo $row4['projid']; ?> name='pname' value=<?php echo $row4['projid']; ?> class='btn btn-default'>Learn More</button>
-                                </form>
-
-                       </div>
-                       </div>
-                    </div>
+                                <div class='progress-bar progress-bar-success' role='progressbar' aria-valuenow='40' aria-valuemin='0' aria-valuemax='100' style='width:".$fundstatus1."%'>
+                                    <span class='sr-only'></span>".$row4['projstatus']."
+                                </div>
+                        </div>
+                        <div><a href='likes.php' class='btn btn-default'>
+                                <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
+                                <span class='sr-only'></span>Like</a>
+                                <a><form action='http://localhost/project/projsearch/proj.php' method='POST'>
+                                <button id='".$row4['projid']."' name='pname' value='".$row4['projid']."' class='btn btn-default'>Learn More</button></form></a>";
+                   echo "</div>
+                   </div>
                 </div>
-<?php   
-    }
-}
+            </div>";
+}}
 ?>
-        
+
             <div class="col-sm-3 col-xs-6">
                 <a href="#">
                     <img class="img-responsive portfolio-item" src="http://placehold.it/500x300" alt="">
@@ -326,8 +279,8 @@ while($myarray)
             </div>
 </div>
         <!-- /.row -->
-        
-    
+
+
 </div>
 </section>
     <!-- /.container -->
@@ -475,12 +428,12 @@ while($myarray)
                     {
                         $n=$k%2;
                         $k=$k-1;
-                        if (!mysqli_data_seek($fetch8, $i)) 
+                        if (!mysqli_data_seek($fetch8, $i))
                         {
                             echo "Cannot seek to row $i: " . mysqli_error() . "\n";
                             continue;
                         }
-                        if (!($row8 = mysqli_fetch_assoc($fetch8))) 
+                        if (!($row8 = mysqli_fetch_assoc($fetch8)))
                         {
                             continue;
                         }
@@ -547,11 +500,11 @@ while($myarray)
                     <h3 class="section-subheading text-muted">Discussions about the project.</h3>
                 </div>
             </div>
-<div id="com">
+
     <?php
     $i=$result['projid'];
     echo $i;
-   // echo "";
+    echo "<div id='com'>";
     $j=$i;
     echo "inside: ".$j;
     $sql9="Select * from comment where projid=$j";
@@ -574,13 +527,12 @@ while($myarray)
         </div>
         <p class='attribution'>by <a href='non'>".$row10['uname']."</a> at ".date_format($comtime,'g:ia, jS F Y')."</p>
     </div>
-      
+
     </article>
 ";
 }
 
-?>
-</div>
+?></div>
  <!--<script type="text/javascript">
 $(".btn").click(function() {
     var id = <?php echo $result['projid']; ?>;
@@ -603,8 +555,6 @@ $(".btn").click(function() {
             }); // ending ajax call
          }
 </script>-->
-
-
 <script type="text/javascript">
 function liked()
 {

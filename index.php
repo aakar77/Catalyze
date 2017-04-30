@@ -75,21 +75,21 @@
         <!-- Wrapper for slides -->
         <div class="carousel-inner">
             <div class="item active">
-                <div class="fill" style="background-image:url('http://placehold.it/1900x1080&text=Slide One');"></div>
+                <div class="fill" style="background-image:url('https://www.planwallpaper.com/static/images/abstract_color_background_picture_8016-wide.jpg');"></div>
                 <div class="carousel-caption">
-                    <h2>Caption 1</h2>
+                    <h2>See Our Cool Projects</h2>
                 </div>
             </div>
             <div class="item">
-                <div class="fill" style="background-image:url('http://placehold.it/1900x1080&text=Slide Two');"></div>
+                <div class="fill" style="background-image:url('https://www.planwallpaper.com/static/images/maxresdefault.jpg');"></div>
                 <div class="carousel-caption">
-                    <h2>Caption 2</h2>
+                    <h2>We Sponsor Futuristic Projects</h2>
                 </div>
             </div>
             <div class="item">
-                <div class="fill" style="background-image:url('http://placehold.it/1900x1080&text=Slide Three');"></div>
+                <div class="fill" style="background-image:url('https://www.planwallpaper.com/static/images/latest.jpg');"></div>
                 <div class="carousel-caption">
-                    <h2>Caption 3</h2>
+                    <h2>Jazz Music!! Jazz Music Projects Rocks</h2>
                 </div>
             </div>
         </div>
@@ -118,22 +118,48 @@
 
 require './php/connectdb.php';
 
-
 $sql="Select * from project";
 $fetch=mysqli_query($con,$sql);
 
 while($row=mysqli_fetch_array($fetch))
 {
+
 $sql1="Select uname from user u, project p where u.uid=$row[projcreatorid]";
 $fetch1=mysqli_query($con,$sql1);
 $row1=mysqli_fetch_array($fetch1);
+
+// For image if there is no image with project, place the default image:
+// Only for image $r_image tag is used
+
+$r_image = $row['projcoverimage'];
+
+$file_dir = "./uploads/projectcover/";
+$default_image = "projectdefault.png";
+$default_image_path = $file_dir . $default_image;
+
+ if ($r_image == null or $r_image == '') {
+    // Show default image if no image specified
+        $r_image =  $default_image_path; 
+    }
+
+
             echo "<div class='col-md-4'>";
                 echo "<div class='panel panel-default'>";
                    echo "<div class='panel-heading'>";
                         echo "<h4>".$row['projname']."</h4>";
                         echo "by <h8>".$row1['uname']."</h8>";
                     echo "</div>";
-                    echo "<div class='panel-body'>";
+                    echo "
+                        <div class='panel-body'>
+                            
+                        <!-- Showing Image of the project --> 
+                            <div class='row' style='margin-top:-15px; margin-right:-15px; margin-left:-15px;'>
+                                 <img src=".$r_image." class='center-block img-rectangle img-responsive' style=' position: relative;
+    float: left;height:200px; width:300px; background-position: 50% 50%' />
+
+                            </div>";
+
+
                         $desc=str_pad($row['projdescription'],50,' ');
                         echo "</div>";
                         echo "<p> ".substr($desc,0,50)."...."."</p>";
@@ -154,8 +180,15 @@ $row1=mysqli_fetch_array($fetch1);
                         <div><a href='likes.php' class='btn btn-default'>
                                 <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
                                 <span class='sr-only'></span>Like</a>
-                                <a><form action='./project/projsearch/proj.php' method='POST'>
-                                <button id='".$row['projid']."' name='pname' value='".$row['projid']."' class='btn btn-default'>Learn More</button></form></a>";
+
+
+<!-- This is the form which sends a request to for loading a particular project page -->
+
+                                
+                                <form action='./projsearch/proj.php' method='POST'>
+                                    <input type='hidden' name='projectid' id = 'projectid' value=".$row['projid']." />
+                                    <button  name='getproject' id='getproject' value='submit' class='btn btn-default'>Learn More</button>
+                                </form>";
                    echo "</div>
                    </div>
                 </div>

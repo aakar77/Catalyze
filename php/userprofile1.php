@@ -79,7 +79,8 @@
 // Write the code for the session here and modify the if condition accordingly
 /* session_start(); */
 
-echo $_POST['userid'];
+
+
 
 if(isset($_POST['userid'])){
 
@@ -96,6 +97,11 @@ if(isset($_POST['userid'])){
 
     //Selecting a single row!
     $sql = "SELECT u.uname, u.uemail, u.uhometown, u.image FROM USER u WHERE u.uid = ?";
+    
+    // Default User file if not provided
+    $file_dir = "../uploads/user/";
+    $default_image = "userdefault.jpg";
+    $default_image_path = $file_dir . $default_image;
 
 
     if($stmt = $con->prepare($sql)){
@@ -121,6 +127,13 @@ if(isset($_POST['userid'])){
 
                 while ($stmt->fetch())
                 {
+
+
+                    if ($r_image == null or $r_image == '') {
+                        // Show default image if no image specified
+                        $r_image =  $default_image_path; 
+                     
+                    }
                         // For calculating no of followers
                         $sql2 = "SELECT COUNT(*) AS noOfFollowers FROM follows f WHERE f.uid = ?";
                         $stmt2 = $con->prepare($sql2);
@@ -162,7 +175,7 @@ if(isset($_POST['userid'])){
 
             <div class="container">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-xs-8 col-md-8 col-xs-12">
 
                         <div class="panel panel-default">
                             <div class="panel-body">
@@ -196,7 +209,8 @@ if(isset($_POST['userid'])){
                                     <div class="col-xs-12 col-sm-4">
                                         <h2 style="color:#286090;"><strong><?php echo $noOfCProjects; $stmt3->free_result(); $stmt3->close(); ?></strong></h2>
                                         <p>No of Projects Created</p>
-                                        <a href="#CreatedProjects" style="a:link, a:visited {
+                                        <a href="#CreatedProjects"  style="a:link, a:visited {
+
     background-color: #f44336;
     color: white;
     padding: 14px 25px;
@@ -233,9 +247,6 @@ a:hover, a:active {
 
         </section>
 
-
-
-
     </div>
 
 
@@ -270,17 +281,13 @@ a:hover, a:active {
                     //alert("yes");
 
                         if(data.status == "success"){
-                           $('#modal-message').html(data.success + " " + id);
-                           $('#myModal').modal({
-                                show: 'true'
-                            });
+                           
+
+
                         }
                         else if (data.status == "error"){
 
-                           $('#modal-message').html(data.success + " " + id);
-                           $('#myModal').modal({
-                                show: 'true'
-                            });
+                         
                         }
 
                     },
@@ -290,11 +297,6 @@ a:hover, a:active {
                     }
                 }); // ending ajax call
             });
-
-
-
-
-
 
         </script>
 
