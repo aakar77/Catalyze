@@ -151,7 +151,7 @@ if($error_username == "" and $error_email == "" and  $error_password == "" and $
                 //echo 'File not included';
             }
 
-			header("Location: ./dashboard.php");
+			header("Location: ../login.php");
 	
 		}
 	  	else{

@@ -330,7 +330,7 @@ a:hover, a:active {
                         }
                         else if (data.status == "error"){
 
-
+                           $("#follow").prop("disabled",true);
                            $('#modal-message').html("Sorry! You have already followed");
                            $('#myModal').modal({
                                 show: 'true'

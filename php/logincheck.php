@@ -20,7 +20,7 @@ if(isset($_POST['email']) and isset($_POST['password']) and validate_email($_POS
 
 	//Query for user
 	//Selecting a single row!
-	$sql = "SELECT uid, uemail, upassword FROM USER WHERE uemail = ? and upassword = ?";
+	$sql = "SELECT uid, uname, uemail, upassword FROM USER WHERE uemail = ? and upassword = ?";
 
 	if($stmt = $con->prepare($sql)){
 		
@@ -37,8 +37,9 @@ if(isset($_POST['email']) and isset($_POST['password']) and validate_email($_POS
 				$r_uid = "";
 				$r_uemail = "";
 				$r_upassword = "";
+				$r_uname = "";
 
-				$stmt->bind_result($r_uid, $r_uemail,$r_upassword);
+				$stmt->bind_result($r_uid, $r_uname, $r_uemail,$r_upassword);
 
 
 	  			while ($stmt->fetch()) {
@@ -47,10 +48,11 @@ if(isset($_POST['email']) and isset($_POST['password']) and validate_email($_POS
 
 	  					//echo "Successful Login";
 
-   						//session_start();
+   						session_start();
 
-                		//$_SESSION['email'] = $r_email;
-                		//$_SESSION['user'] = $r_uid;
+                		$_SESSION['email'] = $r_email;
+                		$_SESSION['uid'] = $r_uid;
+                		$_SESSION['uname'] = $r_uname;
 
                 		//$con->close();
                 		header("Location: ./dashboard.php");
