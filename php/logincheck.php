@@ -1,12 +1,10 @@
 <?php
-//Connect to Server and DB
 
+session_start();
 require 'sanitize.php';
 $error = "";
 if(isset($_POST['email']) and isset($_POST['password']) and validate_email($_POST['email'])){
-
-	require 'connectdb.php'; 
-	
+	require_once 'connectdb.php'; 
 	$c_uemail=$_POST['email'];
 
 	//$Pass1=$_POST['password'];
@@ -47,15 +45,14 @@ if(isset($_POST['email']) and isset($_POST['password']) and validate_email($_POS
 	  				if(($r_uemail == $c_uemail) and ($r_upassword == $c_upassword)){
 
 	  					//echo "Successful Login";
-
-   						session_start();
-
-                		$_SESSION['email'] = $r_email;
+                		//$_SESSION['email'] = $r_email;
                 		$_SESSION['uid'] = $r_uid;
                 		$_SESSION['uname'] = $r_uname;
 
                 		//$con->close();
+
                 		header("Location: ./dashboard.php");
+                		exit();
 					}
 	  				else{
 	  					$error = "Login Failure";

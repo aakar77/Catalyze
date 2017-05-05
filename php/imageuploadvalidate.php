@@ -1,13 +1,16 @@
 <?php
-	
+
+
+
 	$error_file = '';
 
 	//echo 'In file section';
 	
 	if($file_name != ''){
 
+			//,
             $date = new DateTime();
-			$name= md5($date->getTimestamp(). $c_email);
+			$name= hash('sha256',($date->getTimestamp()));
 			$type= $_FILES["profilePic"]["type"];
 			$size= $_FILES["profilePic"]["size"];
 			$temp =$_FILES["profilePic"]["tmp_name"];
@@ -61,5 +64,8 @@
 				}
 			}
 		}
+
+
+
 
 ?>

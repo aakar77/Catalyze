@@ -173,14 +173,20 @@ if(isset($_SESSION['uid']))
     require './php/connectdb.php';
 
     $c_uid = $_SESSION['uid'];
+    $c_projid = $_GET['projectid'];
 
-    $sql1="Select * from category" ;
+
+    $sql1="Select * from project where projcreatorid =".$c_uid." AND projid=".$c_projid;
 
     $fetch1=mysqli_query($con,$sql1);
+    $row1=mysqli_fetch_array($fetch1);
 
     
 
     ?>
+    
+<!--    maid    projid  updatedatetime  mediauri    mtypeid mcaption -->
+
     <div class="row centered-form">
                 <div class="col-md-8 col-md-offset-2">
                     <!-- -->
@@ -188,7 +194,7 @@ if(isset($_SESSION['uid']))
                         <!-- Panel class starts -->
                         <div class="panel-heading">
                             <!-- For Heading of the panel -->
-                            <h3 class="panel-title">Create a New Project</h3>
+                            <h3 class="panel-title">Update Project: <?php echo $row1['projname']; ?></h3>
                         </div>
                         <!--Panel heading ends -->
                         <div class="panel-body">
@@ -196,110 +202,55 @@ if(isset($_SESSION['uid']))
 
                             <!-- HTML FORM BEGINS -->
 
-                            <form name="createform" id="createform" method="post" enctype='multipart/form-data' action="./insertproject.php" novalidate>
+                            <form name="updateform" id="updateform" method="post" enctype='multipart/form-data' action="./php/updateproject.php" novalidate>
 
-                                <div class="row">s
+                                <div class="row">
                                     <div class="col-md-6">
                                         <p><span class="star">* Fields are required.</span></p>
                                     </div>
                                 </div>
+                                        <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row1['projid']; ?> />
 
-                                <!-- Row for Project name begins -->
-                                    <div class="form-group">
-                                        <label for="projname">Project Name<span class="star">*</span></label>
-                                        <input type="text" name="projname" id="projname" class="form-control input-sm" placeholder="Please Enter Project Name" required autofocus />
-                                    </div>
-                                <!-- Row for Project Name ends --> 
 
-                                <!-- Row for Project Description begins -->
+                                <!-- Row for Project Update Description begins -->
                                     <div class="form-group">
-                                        <label for="projdescription">Project Description<span class="star">*</span></label>
-                                        <textarea type="text" name="projdescription" id="projdescription" class="form-control input-sm" placeholder="Please Enter Project Details" required autofocus> </textarea>
+                                        <label for="updatedescription">Update Description<span class="star">*</span></label>
+                                        <textarea type="text" name="updatedescription" id="updatedescription" class="form-control input-sm" placeholder="Please Enter Project Details" required autofocus> </textarea>
                                     </div>
-                                <!-- Row for Project Description ends --> 
+                                <!-- Row for Project Update Description ends --> 
 
                 
-                                <!-- Row for min and max fund details begins -->
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="projminfundreq">Project Minimum Fund Required<span class="star">*</span></label>
-                                            <input type="text" name="projminfundreq" id="projminfundreq" class="form-control input-sm"  placeholder="Project Minimum Fund" required autofocus />
-                                        </div>
-                                    </div>
 
-                                    <div class="col-md-6">
-                                        <div class="form-group">
-                                            <label for="projmaxfundreq" >Project Maximum Fund Required<span class="star">*</span></label>
-                                            <input type="text" name="projmaxfundreq" id="projmaxfundreq" class="form-control input-sm" placeholder="Project Maximum Fund Required" required />
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Row for minimum and maximum fuding ends -->
-
-                                <div class="row">
-                                        <label class="col-xs-6">Please Provide Fund Raising Deadline</label>
-                               <div class="col-xs-6 date">
-                                            <div class="input-group input-append date {validate:{required:true, date:true}}" id="datePicker">
-                                                <input type="text" class="form-control" name="projfunddeadline" id="projfunddeadline" />
-                                                <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar"></span></span>
-                                            </div>
-                                        </div>
-                                </div>
-
-                                <!-- Select a Category Project Belongs to starts -->
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <div class="form-group">
-                                            <label for="categoryid">Project Category<span class="star">*</span></label>
-
-                                            <select class="form-control" name="categoryid" id="categoryid">
-                                        
-
-                                        <?php  
-
-                                            while($row1=mysqli_fetch_array($fetch1)){
-
-                                        ?>
-                                                <option value=<?php echo $row1['categoryid']; ?> ><?php echo $row1['categoryname']; ?> </option>
-                                                
-                                        <?php 
-
-
-        $con->close(); 
-
-                                        } ?> 
-
-                                            <!--<option value="4">Other</option>-->
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- Recovery Options ends -->
-
-
-                                <!-- Please Enter Tags Associated with the project --> <!-- Optional -->
-                                    <div class="form-group">
-                                        <label for="tagname"><span class="star"></span>Project Tags</label>
-                                        <input type="text" name="tagname" id="tagname" class="form-control input-sm" placeholder="Please Enter Tags you want to associate with project seperated by space" autofocus />
-                                    </div>
-                                <!-- Row for Project Name ends --> 
-
-
-                                <!-- Project Cover Image starts Optional-->
+                                <!-- Project Update Image starts Optional-->
                                 <div class="form-group">
-                                    <label for="profilePic" class="control-label">Please choose your Project Cover Image</label>
-                                    <input type="file" name="profilePic" id="profilePic" accept="image/gif,image/jpeg,image/png,image/jpg"  placeholder="Please choose your Project Cover Image" />
+                                    <label for="profilePic" class="control-label">Please choose your Project Update Image</label>
+                                    <input type="file" name="profilePic" id="profilePic" accept="image/gif,image/jpeg,image/png,image/jpg"  placeholder="Please choose your Project Update Image" />
                                 </div>
-                                <!-- Project Cover Image ends -->
+                                <!-- Project Update Image Image ends -->
 
+<!--.mp3,audio -->
+
+                                <!-- Project Update Mp3 starts Optional-->
+                                <div class="form-group">
+                                    <label for="profileAudio" class="control-label">Please choose your Project Update Audio</label>
+                                    <input type="file" name="profileAudio" id="profileAudio" accept=".mp3"  placeholder="Please choose your Project Update audio file" />
+                                </div>
+                                <!-- Project Update Mp3 ends -->
+
+
+                                <!-- Project Update Mp3 starts Optional-->
+                                <div class="form-group">
+                                    <label for="profileVideo" class="control-label">Please choose your Project Update Video</label>
+                                    <input type="file" name="profileVideo" id="profileVideo" accept=".mp4"  placeholder="Please choose your Project Update Video file" />
+                                </div>
+                                <!-- Project Update Mp3 ends -->
 
 
                                 <!-- Submit and reset buttons starts -->
                                 <div class="row">
                                     <div class="form-group">
                                         <div class="col-md-6">
-                                            <input type="submit" name="submit" id="submit" value="Create Project" class="btn btn-primary btn-block" />
+                                            <input type="submit" name="submit" id="submit" value="Update Project" class="btn btn-primary btn-block" />
                                         </div>
                                         <div class="col-md-6">
                                             <input type="reset" name="reset" id="reset" value="Reset" class="btn btn-default btn-block" />
@@ -340,86 +291,57 @@ if(isset($_SESSION['uid']))
 
     <script type="text/javascript">
 
-        $(document).ready(function() {
-            $('#datePicker')
-                .datepicker({
-                    autoclose: true,
-                    format: 'yyyy-mm-dd'
-                })
-
-            });
 
     var jqueryValidator;
     
     $(document).ready(function() {
-        jqueryValidator = $("#createform").validate({
+        jqueryValidator = $("#updateform").validate({
             rules : {
-                 projname: {
-                    required : true,
-                    minlength: 5,
-                    maxlength: 45
-                },
-                projdescription: {
+                updatedescription: {
                     required : true,
                     minlength: 50,
                     maxlength: 300
                 },
-                projminfundreq:{
-                    required: true,
-                    min : 100,
-                    max : 1000000,
-                    number: true
-                },
-                projmaxfundreq:{
-                    required: true,
-                    min : 100,
-                    max : 10000000,
-                    number: true
-                },
-                projfunddeadline: {
-                    required: true    
-                },
-                profilePic : {
 
-                    accept : "png|jpe?g|gif",
-                    filesize : 1048576,
-                    required : true
-                }
-                
+                profilePic : {
+                    accept : "png|jpe?g|gif"
+                    //filesize : 1048576
+                } /*
+                profileAudio : {
+                    accept : "mp3"
+                   // filesize : 10485760,
+                 
+                },
+                profileVideo : {
+                    accept : "mp4"
+                  //  filesize : 52428800,
+                } */
 
             },
             
             messages : {
-                projname : {
-                    required : "Please enter proper project name",
-                    minlength: "Please provide meaningful project name",
-                    maxlength: "Can't exceed minimum length of 45 characters"
 
-                },
-                projdescription: {
+                updatedescription: {
                     required : "Please enter proper meaningful description",
                     minlength: "Please provide meaningful project description",
                     maxlength: "Can't exceed minimum length of 300 characters"
                 },
-                projminfundreq:{
-                    required: "Please enter minimum project funding",
-                    min: "Minimum funding should be greater than 99 $",
-                    max: " Can't exceed 1000000"
-                },
-                projmaxfundreq:{
-                    required: "Please enter minimum project funding",
-                    min: "Minimum funding should be greater than 99 $",
-                    max: " Can't exceed 10000000"
-                },
-                projfunddeadline:{
-                    required: "Please Provide fuding campaign deadline"
-                },
                 profilePic : {
-
-                    accept : "Only Image type files accepted, jpe, png, jpeg only",
-                    filesize : "Please provide proper file size",
-                    true: "Please Provide your project cover image"
+                    accept : "Only Image type files accepted, jpe, png, jpeg only"
                 }
+                /*
+                profileAudio : {
+
+                    accept : "Only .mp3 type files accepted"
+                //    filesize : "Please provide proper file size"
+                    
+                },
+                profileVideo : {
+
+                    accept : "Only video files accepted"
+                 //   filesize : "Please provide proper file size"
+                    
+                } */
             },
             errorElement : "div",
         });

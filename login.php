@@ -2,14 +2,15 @@
 
  #include_once 'php/checksession_simple.php';
 
-  if(isset($_POST['login']))
+ if(isset($_POST['login']))
   {
     include 'php/logincheck.php';
   }
-  if(isset($_POST['register']))
+  /*if(isset($_POST['register']))
   {
     include 'php/register.php';
-  }
+  }*/
+  
 ?>
 
 <!DOCTYPE html>

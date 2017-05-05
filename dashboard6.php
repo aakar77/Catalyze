@@ -101,7 +101,7 @@ if(isset($_SESSION['uid'])){
                             <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            <a href="./php/logout.php"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -112,25 +112,28 @@ if(isset($_SESSION['uid'])){
            <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li>
-                        <a href="dashboard.php"><i class="fa fa-fw fa-dashboard"></i>Your Projects</a>
+                        <a href="dashboard.php"><i class="fa fa-fw fa-dashboard"></i>Dashboard</a>
                     </li>
-                    <li>
+                    <li >
+                        <a href="dashboard1.php"><i class="fa fa-fw fa-dashboard"></i>Your Projects</a>
+                    </li>
+                    <li >
                         <a href="dashboard2.php"><i class="fa fa-fw fa-plus"></i>Create New Project</a>
                     </li>
                     <li>
                         <a href="dashboard3.php"><i class="fa fa-fw fa-share"></i>Your Sponsored Projects</a>
                     </li>
-                    <li>
+                    <li >
                         <a href="dashboard4.php"><i class="fa fa-fw fa-heart"></i>Project's Liked</a>
                     </li>
-                    <li class="active">
+                    <li >
                         <a href="dashboard5.php"><i class="fa fa-fw fa-arrow-right"></i>User's Followed</a>
                     </li>
-                    <li>
+                    <li class="active">
                         <a href="dashboard6.php"><i class="fa fa-fw fa-arrow-left"></i>User's Following</a>
                     </li>
                     <li>
-                        <a href="blank-page.html"><i class="fa fa-fw fa-file"></i>Search a Projects</a>
+                        <a href="blank-page.html"><i class="fa fa-fw fa-file"></i>Your Own Profile</a>
                     </li>
                     <li>
                         <a href="blank-page.html"><i class="fa fa-fw fa-edit"></i>Update Project</a>
@@ -147,7 +150,7 @@ if(isset($_SESSION['uid'])){
   //  "Select * from user u where u.uid in (SELECT f.followsid from follows f where f.uid=".$c_uid.")"
 
 
-    $sql="Select COUNT(*) AS noOfFollowers FROM follows f WHERE f.uid=".$c_uid;
+    $sql="Select COUNT(*) AS noOfFollowers FROM follows f WHERE f.followsid=".$c_uid;
 
     $fetch=mysqli_query($con,$sql);
     $row=mysqli_fetch_array($fetch);
@@ -182,9 +185,15 @@ if(isset($_SESSION['uid'])){
 
 <?php
 
-    $sql1="Select * from user u where u.uid in (SELECT f.followsid from follows f where f.uid=".$c_uid.")";  
+    $sql1="Select * from user u where u.uid in (SELECT f.uid from follows f where f.followsid=".$c_uid.")";  
 
     $fetch1=mysqli_query($con,$sql1);
+
+    // Fetching row count for checking if there are any rows returned or not
+    $row_cnt = mysqli_num_rows($fetch1);
+
+    if($row_cnt != 0){
+                        
 
     while($row1=mysqli_fetch_array($fetch1))
     {
@@ -234,7 +243,7 @@ if(isset($_SESSION['uid'])){
                             <div class="row">    
                                 <!-- Request going to the User Profile Page -->
                                 <div class="col-md-3 col-lg-3"> 
-                                    <form action='./php/userprofile1.php' method='POST'>
+                                    <form action='./php/userprofile1.php' method='GET'>
                                         <input type='hidden' name='userid' id='userid' value=<?php echo $row1['uid']; ?> />
                                         <button  name='getproject' id='getproject' value='submit' class='btn btn-danger'>See <?php echo $row1['uname']; ?>'s Profile</button>
                                     </form>
@@ -244,11 +253,54 @@ if(isset($_SESSION['uid'])){
                         <!-- Closing panel-footer -->
                     </div>
                 </div>
-               
+
 <?php   
+
+    } // closing of while loop
+
+} // CLosing of row count
+else{
+
+?>
+
+<div class="jumbotron">
+    <h2>
+
+        <div class="alert alert-danger">
+            <strong>No Users followed</strong>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+
+        </div> 
+    </h2> 
+     
+</div>
+
+
+
+
+
+
+<?php 
 
 }
 ?>
+
+
+
+
+
+
+
             </div>
             <!-- /.container-fluid -->
 

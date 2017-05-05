@@ -1,0 +1,75 @@
+/*
+------------
+Visit twitterbootstrap.org for more tut 
+-------------
+*/
+
+
+/* New styles */
+@import url('css/bootstrap.min.css');
+@import url('css/bootstrap-responsive.min.css');
+
+
+/* For Captcha */
+
+#captcha_error{
+
+	display: block;
+	color: rgb(160,0,0);
+
+}
+
+/* For star symbol */
+.star{
+        
+    display:inline;
+    font-size: 12pt;
+    font-weight:bold;
+    color:rgb(240,0,0);
+}
+
+
+/* For Jquery */
+div.error {
+    display: block;
+    color: rgb(160,0,0) ;
+}
+input.error {
+	
+	border: 2px solid rgb(160,0,0) ;
+}
+textarea.error{
+
+	border: 2px solid rgb(160,0,0);
+}
+select.error{
+
+	display : inline;
+	border: 2px solid rgb(160,0,0) ;
+}
+checkbox.error{
+
+	border: 2px solid rgb(160,0,0) 
+}
+
+/*
+div.valid {
+
+	background-color:green;
+}
+input.valid {
+	
+	border: 2px solid green;
+} */
+ /*
+select.valid{
+	
+	border: 2px solid green;
+	
+} */
+ /*
+checkbox.valid{
+
+	border: 2px solid green;
+} */
+

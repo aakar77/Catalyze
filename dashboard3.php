@@ -102,7 +102,7 @@ if(isset($_SESSION['uid'])){
                             <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                            <a href="./php/logout.php"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                         </li>
                     </ul>
                 </li>
@@ -113,9 +113,12 @@ if(isset($_SESSION['uid'])){
          <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
                     <li>
-                        <a href="dashboard.php"><i class="fa fa-fw fa-dashboard"></i>Your Projects</a>
+                        <a href="dashboard.php"><i class="fa fa-fw fa-dashboard"></i>Dashboard</a>
                     </li>
-                    <li>
+                    <li >
+                        <a href="dashboard1.php"><i class="fa fa-fw fa-dashboard"></i>Your Projects</a>
+                    </li>
+                    <li >
                         <a href="dashboard2.php"><i class="fa fa-fw fa-plus"></i>Create New Project</a>
                     </li>
                     <li class="active">
@@ -131,7 +134,7 @@ if(isset($_SESSION['uid'])){
                         <a href="dashboard6.php"><i class="fa fa-fw fa-arrow-left"></i>User's Following</a>
                     </li>
                     <li>
-                        <a href="blank-page.html"><i class="fa fa-fw fa-file"></i>Search a Projects</a>
+                        <a href="blank-page.html"><i class="fa fa-fw fa-file"></i>Your Own Profile</a>
                     </li>
                     <li>
                         <a href="blank-page.html"><i class="fa fa-fw fa-edit"></i>Update Project</a>
@@ -187,6 +190,13 @@ if(isset($_SESSION['uid'])){
 
     $fetch1=mysqli_query($con,$sql1);
 
+//---->    // Fetching row count for checking if there are any rows returned or not
+    $row_cnt = mysqli_num_rows($fetch1);
+
+    if($row_cnt != 0){
+                        
+                        
+                        
     while($row1=mysqli_fetch_array($fetch1))
     {
         // Fetching the user name and user ID
@@ -211,6 +221,9 @@ if(isset($_SESSION['uid'])){
         else{
             $r_image = .$r_image;   
         } */
+
+
+
 
 
     ?>
@@ -243,13 +256,14 @@ if(isset($_SESSION['uid'])){
                     $fundstatus1=($row1['projfundcollected']/$row1['projmaxfundreq'])*100;
                             
                     $deadline1=date_create($row1['projfunddeadlinedatetime']);
+                    $dead = $deadline->format('m-d-Y H:i:s');
                     $now1 = new DateTime();
                     $interval1 = $deadline1->diff($now1);
                       
                             //echo date_format($deadline,'g:ia \o\n jS F Y')
                               //<a href='project.php' class='btn btn-default'>Learn More</a></div>";
                 ?>            
-                        <div class='panel-footer'>Funding Deadline: <?php echo $interval1->format("%a days, %h hours"); ?>
+                        <div class='panel-footer'>Funding Deadline: <?php echo $dead; ?>
                             <br>Funds collected: $<?php echo $row1['projfundcollected']; ?></br>
 
                             <br><h8>Funding Progress</h8></br>
@@ -274,7 +288,7 @@ if(isset($_SESSION['uid'])){
                                 
                                 <!-- Request going to the Project page -->
                                 <div class="col-md-3 col-lg-3"> 
-                                    <form action='./projsearch/proj.php' method='POST'>
+                                    <form action='./projsearch/proj.php' method='GET'>
                                         <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row1['projid']; ?> />
                                         <button  name='getproject' id='getproject' value='submit' class='btn btn-danger'>See in Detail</button>
                                     </form>
@@ -285,6 +299,35 @@ if(isset($_SESSION['uid'])){
                 </div>
 <?php   
 
+    } // closing of while statement
+} // Closing of if statement for row count
+else{
+
+?>
+
+<div class="jumbotron">
+    <h2>
+
+        <div class="alert alert-danger">
+            <strong>You Have not sponsored any projects!! </strong>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+
+        </div> 
+    </h2> 
+     
+</div>
+
+<?php
 }
 ?>
 

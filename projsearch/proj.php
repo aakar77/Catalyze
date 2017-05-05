@@ -1,10 +1,10 @@
-<?phplikes
-
-    
+<?php
+//Session Checking 
+ 
+session_start();
+if(isset($_SESSION['uid'])){
 
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -50,14 +50,17 @@
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Toggle navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand page-scroll" href="#page-top">Catalyze</a>
+                <a class="navbar-brand page-scroll" href="../index.php">Catalyze</a>
             </div>
 
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
-                    <li class="hidden">
-                        <a href="#page-top"></a>
+                    <li class="page-scroll">
+                        <a href="../dashboard.php"> Dashboard</a>
+                    </li>
+                    <li class="page-scroll">
+                        <a href="#page-top"> Project Details</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#services">Project Description</a>
@@ -98,7 +101,7 @@
 //Connect to Server and DB
 require '../php/connectdb.php';
 
-$id=$_POST['projectid'];
+$id=$_GET['projectid'];
 
 // Fetching the project details from database
 $sql="Select * from project where projid=$id";
@@ -119,34 +122,151 @@ $row2=mysqli_fetch_array($fetch2);
 $sql3="Select tag from projtags t where t.projid=$result[projid]";
 $fetch3=mysqli_query($con,$sql3);
 
+// Fetching no of likes 
+$sql22="Select count(*) as liked from likes where projid=$id";
+$fetch22=mysqli_query($con,$sql22);
+$result22=mysqli_fetch_array($fetch22);
+
 $deadline=date_create($result['projfunddeadlinedatetime']);
-$now = new DateTime();
-$interval = $deadline->diff($now); ?>
+$dead = $deadline->format('m-d-Y H:i:s');
 
-                <h1 class='page-header'><?php echo $result['projname']; ?>
-                    <br />
 
+ //A For Checking whether the given user is already followed or not ..
+    $already_liked = 0;
+                        
+    $projid = $id; // $id is the project id fetched from get parameter
+    $user_session = $_SESSION['uid'];
+    $user_name = $_SESSION['uname'];
+
+    $sql_like_check = "select * FROM likes l where l.projid=".$projid." and l.uid=".$user_session;
+                        
+    $fetch_like_check=mysqli_query($con,$sql_like_check);
+    $row_like_check= mysqli_num_rows($fetch_like_check);
+
+    if($row_like_check != 0){
+        $already_liked = 1;
+    }
+    // for checking whether already rated or no
+    $already_rated = 0;
+                        
+    $projid = $id; // $id is the project id fetched from get parameter
+    $user_session = $_SESSION['uid'];
+    $user_name = $_SESSION['uname'];
+
+    $sql_rate_check = "select * FROM rating r where r.projid=".$projid." and r.uid=".$user_session;
+                        
+    $fetch_rate_check=mysqli_query($con,$sql_rate_check);
+    $row_rate_check= mysqli_num_rows($fetch_rate_check);
+
+    if($row_rate_check != 0){
+        $already_rated = 1;
+    }
+
+                        
+?>
+                <h1 class='page-header'><?php echo $result['projname'];?>
+                <br/>
                 <small>
-
-
 <!-- See this is a form for seeing user profile --> 
-
-                <form action='../php/userprofile1.php' method='POST'>
-                    
-                      <input type='hidden' name='userid' value=<?php echo $row1['uid']; ?> />
-                      <button id='User' name='User' class='btn btn-default btn-primary'>By <?php echo $row1['uname'] ?></button>
+                <form action='../php/userprofile1.php' method='GET' class="form-inline">
+                    <input type='hidden' name='userid' value=<?php echo $row1['uid']; ?> />
+                    <button id='User' name='User' class='btn btn-default btn-primary'>By <?php echo $row1['uname'] ?></button>
+                    <div class="form-group">
+                        <p>Posted on <?php echo date_format(date_create($result['projpostingdatetime']),'jS \o\f F,Y'); ?></p>
+                    </div>
                 </form>
-
                 </small>
                 <br/>
 
-                <p>Posted on <?php echo date_format(date_create($result['projpostingdatetime']),'jS \o\f F,Y'); ?> </p>
-                    
-                <form id='like' action='javascript:liked()'/>
-                    <button type='submit' value='submit' class='btn btn-default'>
+
+
+                <form id='like' action='javascript:insertlike()' class="form-inline">
+                    <div class="form-group">
+                        <h4><?php echo $result22['liked'];?></h4>
+                    </div>
+
+<?php 
+
+            if($already_liked == 1){
+
+             ?>
+                <button class="btn btn-default" disabled>
                         <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
-                        <span class='sr-only'></span>Like</a>
+                        <span class='sr-only'></span>Liked
+                </button>
+    <?php 
+               }
+               else{
+    ?>
+
+                <button type="submit" class="btn btn-default">
+                        <span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>
+                        <span class='sr-only'></span>Like
+                </button>
+
+
+
+                <?php
+               }
+?>
+
+
+                    
+            </form>
+ <?php          
+                if($result['projstatus']=='Active')
+                {
+                    echo "
+                    <form id='sponsor' action='../sponsor.php' method='GET'>
+                    <input type='hidden' name='projid' value=".$result['projid']." />
+                    <button type='submit' value='submit' class='btn btn-success'>
+                        <span class='glyphicon glyphicon-usd' aria-hidden='true'></span>
+                        <span class='sr-only'></span>Back This Project
                     </button>
+                    </form>
+                    ";
+                }
+            else if ($result['projstatus']=='Executed')
+            {
+                if($already_liked == 1)
+                {
+                echo
+                "<form id='sponsor' action='../rating.php' method='GET'>
+                    <input type='hidden' name='projid' value=".$result['projid']." />
+                    <button type='submit' value='submit' class='btn btn-success' disabled>
+                        <span class='glyphicon glyphicon-star' aria-hidden='true'></span>
+                        <span class='sr-only'></span>Rated!
+                    </button>
+                </form>
+                ";
+                }
+                else
+                {
+                    echo
+                "<form id='sponsor' action='../rating.php' method='GET'>
+                    <input type='hidden' name='projid' value=".$result['projid']." />
+                    <button type='submit' value='submit' class='btn btn-success'>
+                        <span class='glyphicon glyphicon-star' aria-hidden='true'></span>
+                        <span class='sr-only'></span>Rate It!
+                    </button>
+                </form>
+                ";
+                }
+
+            }
+            else
+            {
+                echo "
+                <form id='sponsor'  >
+                    <input type='hidden' name='projid' value=".$result['projid']." />
+                    <button disabled='disabled' type='submit' value='submit' class='btn btn-success'>
+                        <span class='glyphicon glyphicon-usd' aria-hidden='true'></span>
+                        <span class='sr-only'></span>Thanks for Backing!
+                    </button>
+                </form>
+                ";
+            }
+?>
                 </h1>
             </div>
         </div>
@@ -173,16 +293,9 @@ $interval = $deadline->diff($now); ?>
         }
 
 ?>
-
-
-                <img class='img-responsive' src=<?php echo $r_image; ?> class='center-block img-rectangle img-responsive' style=' position: relative; height:100%;  width:100%; background-position: 50% 50%' alt=''>
+            <img class='img-responsive' src=<?php echo $r_image; ?> class='center-block img-rectangle img-responsive' style=' position: relative; height:100%;  width:100%; background-position: 50% 50%' alt=''>
             </div>
-
-
-
             <div class='col-md-4'>
-                <h3>Project Description</h3>
-                <p><?php echo $result['projdescription']; ?></p>
                 <h3>Project Details</h3>
                     <br><span class='glyphicon glyphicon-bullhorn' aria-hidden='true'></span>
                     <span class='sr-only'></span>Funding Status: <?php echo $result['projstatus']; ?></br>
@@ -197,7 +310,7 @@ $interval = $deadline->diff($now); ?>
                     <span class='sr-only'></span>Fund Collected: <?php  echo $result['projfundcollected']; ?></br>
                     
                     <br><span class='glyphicon glyphicon-time' aria-hidden='true'></span>
-                    <span class='sr-only'></span>Funding Deadline: <?php echo $interval->format('%a days, %h hours'); ?></br>
+                    <span class='sr-only'></span>Funding Deadline: <?php echo $dead; ?></br>
                     
                     <br><span class='glyphicon glyphicon-pushpin' aria-hidden='true'></span>
                     <span class='sr-only'></span>Project Category: <?php echo $row2['categoryname']; ?></br>
@@ -209,11 +322,10 @@ $interval = $deadline->diff($now); ?>
                     while($row3=mysqli_fetch_array($fetch3))
                         {
                          ?>
-
-                         <form action='http://localhost/project/likes.php' method='POST'>
-                                <button id='a'"."' name='tagname' value='"'<?php echo $row3['tag']; ?>'"' class='btn btn-default'>
-                                <span class='glyphicon glyphicon-tag' aria-hidden='true'></span>
-                                <span class='sr-only'></span><?php echo $row3['tag']; ?></button>
+                         <form action='../related.php' method='GET'>
+                                <button id='a'  name='tagname' value='<?php echo $row3['tag']; ?>' class="btn btn-default">
+                                <span class="glyphicon glyphicon-tag" aria-hidden="true"></span>
+                                <span class="sr-only"></span><?php echo $row3['tag']; ?></button>
                         </form>
                      <?php    
                         } 
@@ -223,16 +335,19 @@ $interval = $deadline->diff($now); ?>
         </div>
     </div>
 </div>
-
+</div>
+<!--
 <section id='Related Projects Row' class='bg-light-gray'>
     <div class='container'>
         <div class='row'>
             <div class='col-lg-12'>
                 <h3 class='page-header'>Related Projects</h3>
             </div>
-            <!--panels for related projects-->
+            <!--panels for related projects
 
 <?php 
+
+
 
 $sql7="Select tag from projtags t where t.projid=$result[projid]";
 $fetch7=mysqli_query($con,$sql7);
@@ -299,7 +414,7 @@ while($myarray)
                         
                         <div class='panel-body'>
 
-                        <!-- Showing Image of the project --> 
+                        <!-- Showing Image of the project 
                             <div class='row' style='margin-top:-15px; margin-right:-15px; margin-left:-15px;'>
                                  <img src=<?php echo $r_image; ?> class='center-block img-rectangle img-responsive' style=' position: relative;
                                    height:200px;  width:100%; background-position: 50% 50%' />
@@ -335,10 +450,12 @@ while($myarray)
                                         </div>
                             </div>
 
+<!-- Setting the likes for the user, if already liked, liked with button disabled should be shown
+
 
                             <div class="row">
                                 <div class="col-md-3 col-lg-3 ">
-                                    <form action='../phplikes.php' method='POST'>
+                                    <form action='../php/likes.php' method='POST'>
                                         <input type='hidden' name='projid' id='projid' value=<?php echo $row4['projid']; ?> />
                                         <button  name='setlikes' id='setlikes' value='submit' class='btn btn-default'>Like It? </button>
                                     </form>
@@ -346,9 +463,9 @@ while($myarray)
                                 </div>
 
                                 
-                                <!-- Request going to the Project page -->
+                                <!-- Request going to the Project page 
                                 <div class="col-md-3 col-lg-3"> 
-                                    <form action='./proj.php' method='POST'>
+                                    <form action='./proj.php' method='GET'>
                                         <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row4['projid']; ?> />
                                         <button  name='getproject' id='getproject' value='submit' class='btn btn-default'>Learn More</button>
                                     </form>
@@ -386,10 +503,10 @@ while($myarray)
                 </a>
             </div>
 </div>
-        <!-- /.row -->
+        <!-- /.row 
         
     
-</div>
+</div>-->
 </section>
     <!-- /.container -->
     <!-- jQuery -->
@@ -398,7 +515,6 @@ while($myarray)
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
 
-</body>
     </div>
 
     <!-- Services Section -->
@@ -526,25 +642,13 @@ while($myarray)
                     <ul class="timeline">
                    <?php
                     //echo $result['projid'];
-                    $sql8="Select * from fundraise.update where projid=$result[projid]";
+                    $sql8="Select * from fundraise.update where projid=$result[projid] order by updatedatetime desc";
                     $fetch8=mysqli_query($con,$sql8);
                     $k=mysqli_num_rows($fetch8);
-                    //while($row8=mysqli_fetch_array($fetch8))
-                   // {
-                    $row8=mysqli_fetch_array($fetch8);
-                    for($i=$k-1;$i>=0;$i--)
+                    while($row8=mysqli_fetch_array($fetch8))
                     {
                         $n=$k%2;
                         $k=$k-1;
-                        if (!mysqli_data_seek($fetch8, $i)) 
-                        {
-                            echo "Cannot seek to row $i: " . mysqli_error() . "\n";
-                            continue;
-                        }
-                        if (!($row8 = mysqli_fetch_assoc($fetch8))) 
-                        {
-                            continue;
-                        }
                     if($n==1)
                     {
                         echo "<li>
@@ -609,31 +713,50 @@ while($myarray)
                 </div>
             </div>
 <div id="com">
-    <?php
-    $i=$result['projid'];
-    echo $i;
-   // echo "";
-    $j=$i;
-    echo "inside: ".$j;
-    $sql9="Select * from comment where projid=$j";
+
+<?php
+    
+    $sql9="Select * from comment where projid=$result[projid] order by cdatetime asc";
     $fetch9=mysqli_query($con,$sql9);
+
+    $file_dir = "../uploads/user/";
+    $default_image = "userdefault.jpg";
+    $default_image_path = $file_dir . $default_image;
+
+
+
+
     while($row9=mysqli_fetch_array($fetch9))
 {
-    $sql10="Select uname from user where uid=$row9[uid]";
+    $sql10="Select uname, image from user where uid=$row9[uid]";
     $fetch10=mysqli_query($con,$sql10);
     $row10=mysqli_fetch_array($fetch10);
     $comtime=date_create($row9['cdatetime']);
-    echo "
+    $r_image = $row10['image'];
 
+      if ($r_image == null or $r_image == '') {
+                        // Show default image if no image specified
+                        $r_image =  $default_image_path; 
+                     }
+
+
+
+    echo "
     <article class='comment'>
     <a class='comment-img' href=''>
-        <img src='http://lorempixum.com/50/50/people/1' alt='' width='50' height='50'>
+        <img src=".$r_image." alt='' width='50' height='50'>
       </a>
     <div class='comment-body'>
         <div class='text'>
           <p>".$row9['cdescription']."</p>
         </div>
-        <p class='attribution'>by <a href='non'>".$row10['uname']."</a> at ".date_format($comtime,'g:ia, jS F Y')."</p>
+        <p class='attribution'>by ";
+        if ($user_name==$row10['uname'])
+            {echo"<a href='../dashboard.php'>".$row10['uname']."</a> at ".date_format($comtime,'g:ia, jS F Y')."</p>";}
+        else{
+            echo"<a href='../php/userprofile1.php?userid=".$row9['uid']."'>".$row10['uname']."</a> at ".date_format($comtime,'g:ia, jS F Y')."</p>";
+        }
+        echo"
     </div>
       
     </article>
@@ -642,45 +765,20 @@ while($myarray)
 
 ?>
 </div>
- <!--<script type="text/javascript">
-$(".btn").click(function() {
-    var id = <?php echo $result['projid']; ?>;
-    var status = document.getElementById('id').value; // $(this) refers to button that was clicked
-            $.ajax({
-                url: 'http://project/comment.php',
-                type: 'POST',
-                data: {'projid': id, 'comment': status},
-                success: function(data){
-                    alert("yes");
-                    }
-
-                    //$(".table-display").html('<p> Successfully ordered </p>');
-                   /* alert("yes");
-                        if(data.status == 'success'){
-                            alert("Thank you for your order");
-                        }else if(data.status == 'error'){
-                            alert("Sorry!! We cannot proceed further with your order");
-                    } */
-            }); // ending ajax call
-         }
-</script>-->
-
-
 <script type="text/javascript">
-function liked()
+function insertlike()
 {
-   
-    
+    var li=<?php echo $result22['liked']; ?>;
     var id = <?php echo $result['projid']; ?>;
-    
     $.ajax({
                 url: '../php/likes.php',
                 type: 'POST',
                 data: {'projid': id},
                 success: function(h)
                 {
-                    
-                    $("#like").html("<button id='like' disabled='disabled' class='btn btn-default'><span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span>Liked</button>")
+                    //window.location.reload(true);
+                    var fi=li+1;
+                    $("#like").html("<form id='like' class='form-inline'><div class='form-group'><h4>"+fi+"</h4></div><button type='submit' disabled='disabled' class='btn btn-default'><span class='glyphicon glyphicon-thumbs-up' aria-hidden='true'></span><span class='sr-only'></span>Liked</button></form>");
                 },
                 error: function()
                 {
@@ -688,7 +786,6 @@ function liked()
                 }
             });
 }
-
 function insertcomment()
 {
     
@@ -716,7 +813,8 @@ var datetime = new Date().today() + " at" + new Date().timeNow();
     <a class="comment-img" href="">
         <img src="http://lorempixum.com/50/50/people/1" alt="" width="50" height="50">
       </a></article>');*/
-                        $("#com ").append("<article class='comment'><a class='comment-img' href=''><img src='http://lorempixum.com/50/50/people/1' alt='' width='50' height='50'></a><div class='comment-body'><div class='text'><p>"+comment+"</p></div><p class='attribution'>by <a href='non'>Username</a> at"+datetime+"</p></div></article>"); 
+    window.location.reload(true);
+                       // $("#com ").append("<article class='comment'><a class='comment-img' href=''><img src='http://lorempixum.com/50/50/people/1' alt='' width='50' height='50'></a><div class='comment-body'><div class='text'><p>"+comment+"</p></div><p class='attribution'>by <a href='non'>Username</a> at"+datetime+"</p></div></article>"); 
                 },
                 error: function()
                 {
@@ -740,7 +838,7 @@ var datetime = new Date().today() + " at" + new Date().timeNow();
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
     </section>
 
-    <footer>
+  <!--  <footer>
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
@@ -766,7 +864,7 @@ var datetime = new Date().today() + " at" + new Date().timeNow();
                 </div>
             </div>
         </div>
-    </footer>
+    </footer>-->
 
     <!-- Portfolio Modals -->
     <!-- Use the modals below to showcase details about your portfolio projects! -->
@@ -969,3 +1067,14 @@ var datetime = new Date().today() + " at" + new Date().timeNow();
 </body>
 
 </html>
+
+<?php 
+
+}else{
+    header("Location: ../index.php");
+
+}
+
+
+?>
+

@@ -42,13 +42,13 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="index.html">WELCOME!!</a>
+                <a class="navbar-brand" href="index.html">Catalyze</a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li>
-                        <a href="about.html">About</a>
+                        <a href="about.html">Dashboard</a>
                     </li>
                     <li>
                         <a href="login.php">Login</a>
@@ -143,10 +143,6 @@ $default_image_path = $file_dir . $default_image;
     }
 
 
-
-
-
-
             echo "<div class='col-md-4'>";
                 echo "<div class='panel panel-default'>";
                    echo "<div class='panel-heading'>";
@@ -169,11 +165,11 @@ $default_image_path = $file_dir . $default_image;
                         echo "<p> ".substr($desc,0,50)."...."."</p>";
                         $fundstatus=($row['projfundcollected']/$row['projmaxfundreq'])*100;
                         $deadline=date_create($row['projfunddeadlinedatetime']);
-                        $now = new DateTime();
-                        $interval = $deadline->diff($now);
+                        $dead = $deadline->format('m-d-Y H:i:s');
+                        //echo $dead;
                         //echo date_format($deadline,'g:ia \o\n jS F Y')
                           //<a href='project.php' class='btn btn-default'>Learn More</a></div>";
-                        echo "<div class='panel-footer'>Funding Deadline: ".$interval->format("%a days, %h hours");
+                        echo "<div class='panel-footer'>Funding Deadline: ".$dead;
                         echo "<br>Funds collected: $".$row['projfundcollected']."</br>";
                         echo "<br><h8>Funding Progress</h8></br>
                         <div class='progress'>
@@ -186,20 +182,21 @@ $default_image_path = $file_dir . $default_image;
         <div>
 
             <div class="row">
+                <!--
                 <div class="col-md-3 col-lg-3 ">
                     <form action='../phplikes.php' method='POST'>
                         <input type='hidden' name='projid' id='projid' value=<?php echo $row['projid']; ?> />
                             <button  name='setlikes' id='setlikes' value='submit' class='btn btn-default'>Like It? </button>
                     </form>
 
-                </div>
+                </div> -->
 
                                 
                 <!-- Request going to the Project page -->
                 <div class="col-md-3 col-lg-3"> 
-                    <form action='./projsearch/proj.php' method='POST'>
+                    <form action='./projsearch/proj.php' method='GET'>
                             <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row['projid']; ?> />
-                                <button  name='getproject' id='getproject' value='submit' class='btn btn-default'>Learn More</button>
+                                <button  name='getproject' id='getproject' value='submit' class='btn btn-danger'>Learn More..</button>
                     </form>
                 </div>
             </div>

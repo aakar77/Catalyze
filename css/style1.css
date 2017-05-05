@@ -1,0 +1,83 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+html * {
+    font-family: 'Open sans';
+}
+
+#payment-form {
+    background-color: #edeceb;
+    width: auto;
+    height: 10em;
+    font-size: 14px;
+    color: #555759;
+}
+
+#payment-form-header {
+    background-color: #666;
+    height: auto;
+    font-size: 18px;
+    font-weight: lighter;
+    color: #fff;
+    padding: 1.25em;
+}
+
+#payment-form-main {
+    background-color: #edeceb;
+    height: auto;
+    width: auto;
+    padding: 1em;
+    border: 1px solid #ccc;
+}
+
+#expiryDateMonth {
+    width: 5.5em;
+    display: inline;
+}
+
+.col-xs-6 {
+    padding: 0;
+}
+
+#expiryDateYear {
+    width: 5.5em;
+    display: inline;
+}
+
+label {
+    padding-top: 1em;
+    font-size: 14px;
+}
+
+input[type="checkbox"] {
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    margin-left: 1em;
+}
+
+.input-group-addon {
+ background-color: white;   
+}
+
+#saveCardDetailsBox {
+    margin-top: 2em;
+    background-color: #f4f5f5;
+    height: auto;
+    padding: 0;
+    font-size: 14px;
+}
+
+hr {
+    color: #fff;
+    border-color: #fff;
+    background-color: #fff;
+}
+
+#pay-now-button {
+    background-color: #090;
+    font-size: 24px;
+    color: #fff;
+    width: 100%;
+    padding: .5em;
+    border-radius: 7px;
+}

@@ -1,0 +1,1 @@
+// for any questions, please feel free to give me a call :) I made it responsive to fit the page at any size. I can change the width's if needs be. also here's a https://jsfiddle.net/aLquy02q/ Thanks, Amy!

@@ -10,6 +10,7 @@ $error_password = "";
 $error_hometown = "";
 $error_contact  = "";
 $error_email = "";
+$error_file = "";
 
 
 $c_username = $_POST['rusername'];
@@ -22,10 +23,16 @@ $c_contact = $_POST['rcontact'];
 
 //Code for image
 $file_dir = "../uploads/user/";
+$file_path = null;
 
 $file_name = $_FILES['profilePic']['name'];
 
-require 'imageuploadvalidate.php';
+if($file_name != null and $file_name != ''){
+
+	require './imageuploadvalidate.php';
+
+}
+
 
 
 #$target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
@@ -85,11 +92,6 @@ if($c_contact != ""){
 
 // if not null means file name is present and is uploaded by the user.
 
-
-
-
-
-
 /* Hometwon and rcontact can be NULL */
 /*
 echo $error_username;
@@ -99,12 +101,12 @@ echo $error_hometown;
 echo $error_contact;
 */
 
-if($error_username == "" and $error_email == "" and  $error_password == "" and $error_hometown == "" and $error_contact == "" and $error_file =="" ){
+if($error_username == "" and $error_email == "" and  $error_password == "" and $error_hometown == "" and $error_contact == "" and $error_file ==""){
 
 
 	require 'connectdb.php'; 
 	
-	echo "Inside the function";
+	//echo "Inside the function";
 
 	// Sanitize custom function present in the file which contains necessary functions
 	$c_username = sanitize_input($c_username, $con);
@@ -131,27 +133,27 @@ if($error_username == "" and $error_email == "" and  $error_password == "" and $
 //	echo "Inside the functions";
 	//Query for user
 	//Selecting a single row!
-
+	echo($c_username." ".$c_email." ".$c_password." ".$c_hometown." ".$c_contact." ".$file_path);
 
 
 	$sql = "INSERT INTO USER (`uname`, `uemail`, `upassword`, `uhometown`, `ucontactno`,`image`) VALUES (?,?,?,?,?,?)";
 	
 	if($stmt = $con->prepare($sql)){
 		
-		echo $file_path;
+		//echo $file_path;
 
 		$stmt->bind_param("ssssis", $c_username,$c_email,$c_password,$c_hometown,$c_contact,$file_path);
 	
 		if($stmt->execute()){
 
- 			if($file_path != ''){
+ 			if($file_path != '' and $file_path != null){
                 move_uploaded_file($temp,$file_path);                            
             }
             else {                
                 //echo 'File not included';
             }
 
-			header("Location: ../login.php");
+			//header("Location: ../login.php");
 	
 		}
 	  	else{

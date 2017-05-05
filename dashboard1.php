@@ -1,4 +1,4 @@
-<?php
+<!-- This is the dashboard page for <?php
 
 session_start();
 if(isset($_SESSION['uid'])){
@@ -110,13 +110,13 @@ if(isset($_SESSION['uid'])){
             <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
             <div class="collapse navbar-collapse navbar-ex1-collapse">
                 <ul class="nav navbar-nav side-nav">
-                    <li class="active">
-                        <a href="dashboard.php"><i class="fa fa-fw fa-dashboard"></i>Dashboard</a>
+                    <li>
+                        <a href="dashboard.php"><i class="fa fa-fw fa-dashboard"></i>Your Projects</a>
                     </li>
-                    <li >
+                    <li class="active">
                         <a href="dashboard1.php"><i class="fa fa-fw fa-dashboard"></i>Your Projects</a>
                     </li>
-                    <li >
+                    <li>
                         <a href="dashboard2.php"><i class="fa fa-fw fa-plus"></i>Create New Project</a>
                     </li>
                     <li>
@@ -170,10 +170,14 @@ if(isset($_SESSION['uid'])){
                 <div class="row">
                     <div class="col-lg-8 col-md-8">
                         <h1 class="page-header">
-                           <i class="fa fa-dashboard"></i>Dashboard<!-- <small>Projects Overview</small> -->
+                           <i class="fa fa-dashboard"></i>Your Created Projects <!-- <small>Projects Overview</small> -->
                         </h1>
                     </div>
-                    
+                    <div class="col-lg-4 col-md-4">
+                        <h1 class="page-header">
+                            <i class="fa fa-unchecked"></i>No. Created Projects : <?php echo $projcount; ?>
+                        </h1> 
+                    </div>
                 </div>
                 <!-- /.row -->
 
@@ -182,6 +186,16 @@ if(isset($_SESSION['uid'])){
 
     $sql1="Select * from project where projcreatorid=".$c_uid;
     $fetch1=mysqli_query($con,$sql1);
+
+    // Fetching row count for checking if there are any rows returned or not
+    $row_cnt = mysqli_num_rows($fetch1);
+
+    if($row_cnt != 0){
+                        
+                        
+                        
+
+
 
     while($row1=mysqli_fetch_array($fetch1))
     {
@@ -210,6 +224,7 @@ if(isset($_SESSION['uid'])){
 
 
     ?>
+
                 <div class='col-md-4'>
                     <div class='panel panel-default'>
                         
@@ -238,14 +253,13 @@ if(isset($_SESSION['uid'])){
                 <?php 
                     $fundstatus1=($row1['projfundcollected']/$row1['projmaxfundreq'])*100;
                             
-                    $deadline1=date_create($row1['projfunddeadlinedatetime']);
-                    $now1 = new DateTime();
-                    $interval1 = $deadline1->diff($now1);
-                      
+                    $deadline=date_create($row1['projfunddeadlinedatetime']);
+                    $dead = $deadline->format('m-d-Y H:i:s');
+                   
                             //echo date_format($deadline,'g:ia \o\n jS F Y')
                               //<a href='project.php' class='btn btn-default'>Learn More</a></div>";
                 ?>            
-                        <div class='panel-footer'>Funding Deadline: <?php echo $interval1->format("%a days, %h hours"); ?>
+                        <div class='panel-footer'>Funding Deadline: <?php echo $dead; ?>
                             <br>Funds collected: $<?php echo $row1['projfundcollected']; ?></br>
 
                             <br><h8>Funding Progress</h8></br>
@@ -269,17 +283,62 @@ if(isset($_SESSION['uid'])){
 
                                 
                                 <!-- Request going to the Project page -->
-                                <div class="col-md-3 col-lg-3"> 
-                                    <form action='./projsearch/proj.php' method='POST'>
+                                <div class="col-md-2 col-lg-2 "> 
+                                    <form action='./projsearch/proj.php' method='GET'>
                                         <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row1['projid']; ?> />
                                         <button  name='getproject' id='getproject' value='submit' class='btn btn-danger'>See in Detail</button>
                                     </form>
                                 </div>
+                                <!-- Request going to the Project Update page -->
+                                <div class="col-md-2 col-lg-2 "> 
+                                    <form action='./update_project.php' method='GET'>
+                                        <input type='hidden' name='projectid' id = 'projectid' value=<?php echo $row1['projid']; ?> />
+                                        <button  name='upateproject' id='upateproject' value='submit' class='btn btn-default'>Update Project</button>
+                                    </form>
+                                </div>
+
+
                             </div>
                        </div>
                     </div>
                 </div>
 <?php   
+
+    } // closing of while loop
+
+} // CLosing of row count
+else{
+
+?>
+
+<div class="jumbotron">
+    <h2>
+
+        <div class="alert alert-danger">
+            <strong>No Projects created</strong><a href="./dashboard2.php"> Create some projects?</a>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+
+
+        </div> 
+    </h2> 
+     
+</div>
+
+
+
+
+
+
+<?php 
 
 }
 ?>
